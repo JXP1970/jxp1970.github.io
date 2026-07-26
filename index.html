@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meine Apps</title>
+<meta name="description" content="Eine Sammlung kleiner Web-Apps – zum Öffnen und Weitergeben.">
+<style>
+  :root{
+    --bg:#f4f1ea; --card:#fffdf8; --ink:#2b2924; --muted:#6f6a60; --faint:#a49e91;
+    --line:#e4ded1; --accent:#3b6d43; --accent-soft:#e7efe4; --accent-ink:#2b5233;
+    --wa:#25d366; --wa-ink:#0b3d1f;
+    --shadow:0 1px 3px rgba(60,50,30,.06),0 8px 24px rgba(60,50,30,.05);
+    --serif:Georgia,'Iowan Old Style','Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16181a; --card:#1f2225; --ink:#e7e3d9; --muted:#a49f94; --faint:#6e695f;
+      --line:#33373b; --accent:#7fb389; --accent-soft:#243027; --accent-ink:#a9d0af;
+      --wa:#25d366; --wa-ink:#d6ffe6;
+      --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding:0 16px 72px}
+  .wrap{max-width:900px;margin:0 auto}
+
+  header.top{text-align:center;padding:44px 0 8px}
+  header.top .kick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    background:var(--accent-soft);display:inline-block;padding:5px 13px;border-radius:999px;margin-bottom:16px}
+  header.top h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.15}
+  header.top p{color:var(--muted);font-size:15px;margin-top:8px}
+  .share-page{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--sans);
+    font-size:14px;font-weight:600;color:#fff;background:var(--wa);text-decoration:none;
+    padding:11px 20px;border-radius:12px;box-shadow:var(--shadow);transition:transform .12s,filter .12s}
+  .share-page:hover{filter:brightness(1.05)}
+  .share-page:active{transform:translateY(1px)}
+
+  .cat{margin:38px 4px 14px;display:flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .cat::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .app{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:18px 18px 16px;display:flex;flex-direction:column;gap:4px;
+    text-decoration:none;color:inherit;transition:transform .12s,border-color .12s,box-shadow .12s}
+  .app:hover{transform:translateY(-2px);border-color:var(--accent);
+    box-shadow:0 2px 6px rgba(60,50,30,.08),0 14px 30px rgba(60,50,30,.08)}
+  .app .emoji{font-size:30px;line-height:1;margin-bottom:8px}
+  .app h3{font-family:var(--serif);font-size:19px;font-weight:600}
+  .app p{color:var(--muted);font-size:13.5px;line-height:1.5;flex:1;margin-bottom:12px}
+  .app .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .app .open{font-size:13px;font-weight:600;color:var(--accent);display:inline-flex;align-items:center;gap:5px}
+  .wa-btn{flex:0 0 auto;width:38px;height:38px;border-radius:11px;border:1px solid var(--line);
+    background:transparent;color:var(--wa);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background .12s,border-color .12s}
+  .wa-btn:hover{background:var(--accent-soft);border-color:var(--wa)}
+  .wa-btn svg{width:19px;height:19px;fill:currentColor}
+
+  footer{text-align:center;color:var(--faint);font-size:12px;line-height:1.7;margin-top:44px}
+  footer a{color:var(--muted)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);
+    background:var(--ink);color:var(--bg);font-size:13px;padding:10px 18px;border-radius:11px;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="kick">Meine Apps</div>
+    <h1 id="pageTitle">Kleine Helfer, ein Ort</h1>
+    <p>Alles zum Öffnen und Weitergeben – einfach antippen.</p>
+    <a class="share-page" id="sharePage" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-1.9-.9-.3-.1-.5-.2-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3C4.3 15 3.8 13.5 3.8 12c0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.7 8.2-8.2 8.2z"/></svg>
+      Diese Seite teilen
+    </a>
+  </header>
+
+  <div id="app-root"></div>
+
+  <footer>
+    Alle Apps laufen direkt im Browser · gehostet auf GitHub Pages.<br>
+    <a href="https://jxp1970.github.io/" target="_blank" rel="noopener">jxp1970.github.io</a>
+  </footer>
+</div>
+<div class="toast" id="toast">Link kopiert</div>
+
+<script>
+const HUB_URL = "https://jxp1970.github.io/";
+
+const CATS = [
+  { name:"Glaube", apps:[
+    { e:"🕊️", t:"Mein Bibeltag", d:"Tageslese, Predigttext & Wochenpsalm – täglich neu, Luther 2017 / Schlachter 2000.", u:"https://jxp1970.github.io/bibeltag/" },
+    { e:"📖", t:"Psalm-Lern-App", d:"Psalmen Schritt für Schritt auswendig lernen.", u:"https://jxp1970.github.io/psalm-lern-app/" },
+  ]},
+  { name:"Musik", apps:[
+    { e:"🎼", t:"Noten-Scanner", d:"Notenblätter scannen und digitalisieren.", u:"https://jxp1970.github.io/noten-scanner/" },
+    { e:"🎵", t:"Noten-Player", d:"Noten abspielen und anhören.", u:"https://jxp1970.github.io/noten-player/" },
+    { e:"🎺", t:"Griffübungen", d:"Griffübungen fürs Instrument.", u:"https://jxp1970.github.io/jxp-griffuebungen/" },
+  ]},
+  { name:"Lernen & Alltag", apps:[
+    { e:"🗣️", t:"Ellie", d:"Sprachpartnerin zum Üben – Sprechen, Hören, Vokabeln.", u:"https://jxp1970.github.io/ellie/" },
+    { e:"⚖️", t:"Abnehm-Projekt", d:"Projekt −10 kg: Gewicht und Fortschritt im Blick.", u:"https://jxp1970.github.io/abnehmprojekt/" },
+  ]},
+  { name:"Bau & BIM", apps:[
+    { e:"🪜", t:"Treppenplaner", d:"Treppen planen und berechnen.", u:"https://jxp1970.github.io/treppenplaner/" },
+    { e:"🏗️", t:"Baustellen-Controlling", d:"Baustellen und Kosten im Griff.", u:"https://jxp1970.github.io/jxp-baustelle/" },
+    { e:"🧱", t:"IFC-Tool", d:"IFC-Editor, 3D-Viewer und Bewehrungsabnahme.", u:"https://jxp1970.github.io/jxp-ifc-tool/" },
+    { e:"🧩", t:"IFC Editor / Viewer", d:"IFC-Modelle bearbeiten und ansehen.", u:"https://jxp1970.github.io/jxp-ifc-editor-viewer/" },
+    { e:"🗂️", t:"IFC-Layer-Konfigurator", d:"IFC-Bewehrung aufbereiten für BIMcollab & Trimble.", u:"https://jxp1970.github.io/ifc-layer-konfigurator/" },
+  ]},
+  { name:"Büro", apps:[
+    { e:"📝", t:"Protokoll-Assistent", d:"Protokolle schnell und sauber erstellen.", u:"https://jxp1970.github.io/protokoll-assistent/" },
+  ]},
+];
+
+const waLink = (title, url) =>
+  "https://wa.me/?text=" + encodeURIComponent("*" + title + "*\n" + url);
+
+const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-1.9-.9-.3-.1-.5-.2-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3C4.3 15 3.8 13.5 3.8 12c0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.7 8.2-8.2 8.2z"/></svg>';
+
+const root = document.getElementById("app-root");
+CATS.forEach(cat=>{
+  const h = document.createElement("div");
+  h.className = "cat";
+  h.textContent = cat.name;
+  root.appendChild(h);
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  cat.apps.forEach(a=>{
+    const card = document.createElement("a");
+    card.className = "app";
+    card.href = a.u; card.target = "_blank"; card.rel = "noopener";
+    card.innerHTML =
+      `<div class="emoji">${a.e}</div>
+       <h3>${a.t}</h3>
+       <p>${a.d}</p>
+       <div class="row">
+         <span class="open">Öffnen →</span>
+         <button class="wa-btn" title="Per WhatsApp teilen" aria-label="${a.t} per WhatsApp teilen">${WA_SVG}</button>
+       </div>`;
+    card.querySelector(".wa-btn").addEventListener("click", ev=>{
+      ev.preventDefault(); ev.stopPropagation();
+      window.open(waLink(a.t, a.u), "_blank", "noopener");
+    });
+    grid.appendChild(card);
+  });
+  root.appendChild(grid);
+});
+
+// Seite teilen
+document.getElementById("sharePage").href =
+  waLink("Meine Apps – kleine Helfer, alle an einem Ort", HUB_URL);
+</script>
+</body>
+</html>
